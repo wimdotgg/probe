@@ -1,0 +1,16 @@
+name: protected-labels
+on:
+  issues:
+    types: [labeled]
+  pull_request_target:
+    types: [labeled]
+permissions:
+  contents: read
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          SENDER: ${{ github.event.sender.login }}
+          LABEL: ${{ github.event.label.name }}
+        run: echo "sender=$SENDER label=$LABEL"

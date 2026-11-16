@@ -1,0 +1,32 @@
+name: ci
+on:
+  pull_request:
+  merge_group:
+permissions:
+  contents: read
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo check
+      - name: V4 token probe
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          for p in rulesets environments actions/permissions; do
+            if gh api "repos/$GH_REPO/$p" >/dev/null 2>err.txt; then echo "V4 $p OK"; else echo "V4 $p FAILED $(head -c 200 err.txt)"; fi
+          done
+  pr-metadata:
+    name: PR metadata
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo metadata
+  pr-size:
+    name: pr-size
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo size
+  called:
+    uses: ./.github/workflows/reusable.yml
